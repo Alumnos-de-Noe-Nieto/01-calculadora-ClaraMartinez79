@@ -3,17 +3,40 @@ Nivel 6: Generación de Código - Conversión de Romano a Entero
 Este módulo contiene la función para convertir números romanos a enteros.
 """
 
+
+
 from calculadora.error import ExpresionInvalida
-from calculadora.validaciones import (
-    validar_orden_descendente,
-    validar_repeticiones_icxm,
-    validar_repeticiones_vld,
-    validar_restas,
-)
 from calculadora.validaciones.alfabeto import validar_simbolos
+from calculadora.validaciones.orden_descendente import validar_orden_descendente
+from calculadora.validaciones.repeticiones_icxm import validar_repeticiones_icxm
+from calculadora.validaciones.repeticiones_vld import validar_repeticiones_vld
+from calculadora.validaciones.restas import validar_restas
 
 
 def romano_a_entero(cadena: str) -> int:
+    limpia = cadena.strip()
+
+    if not validar_simbolos(limpia):
+        raise ExpresionInvalida("Símbolos inválidos")
+    if not validar_repeticiones_icxm(limpia):
+        raise ExpresionInvalida("Repetición I/X/C/M")
+    if not validar_repeticiones_vld(limpia):
+        raise ExpresionInvalida("Repetición V/L/D")
+    if not validar_restas(limpia):
+        raise ExpresionInvalida("Resta inválida")
+    if not validar_orden_descendente(limpia):
+        raise ExpresionInvalida("Orden incorrecto")
+
+    valores = {'I': 1, 'V': 5, 'X': 10, 'L': 50, 'C': 100, 'D': 500, 'M': 1000}
+    total = 0
+
+    for i in range(len(limpia)):
+        if i + 1 < len(limpia) and valores[limpia[i]] < valores[limpia[i+1]]:
+            total -= valores[limpia[i]]
+        else:
+            total += valores[limpia[i]]
+
+    return total
     """
     Convierte una cadena de números romanos válida a su valor entero correspondiente.
 

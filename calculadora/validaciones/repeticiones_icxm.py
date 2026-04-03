@@ -7,6 +7,14 @@ Ejemplos inválidos: IIII, XXXX, CCCC, MMMM
 """
 
 def validar_repeticiones_icxm(cadena: str) -> bool:
+    prohibidos = ["IIII", "XXXX", "CCCC", "MMMM"]
+
+    for patron in prohibidos:
+        if patron in cadena:
+            return False
+
+    return all(patron not in cadena for patron in prohibidos)
+
     """
     Valida que los símbolos I, X, C, M no se repitan más de 3 veces consecutivas.
 
